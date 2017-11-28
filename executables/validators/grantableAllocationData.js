@@ -4,8 +4,12 @@ const grantableAllocationsContractInteract = require('../../lib/contract_interac
 
 const grantableAllocationsDataVerifier = {
 
-  perform: function() {
-    grantableAllocationsContractInteract.getGranteesData().then(console.log('Done!!'));
+  perform: async function() {
+
+    console.log('Starting verification for grantable allocations');
+    await grantableAllocationsContractInteract.getGranteesData();
+    console.log('Ended verification for grantable allocations');
+
   }
 
 }
