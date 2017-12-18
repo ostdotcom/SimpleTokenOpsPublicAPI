@@ -35,5 +35,25 @@ router.get('/get-balance', function (req, res, next) {
 
 });
 
+/* Get number of decimals of a contract */
+router.get('/get-decimals', function (req, res, next) {
+  const performer = async function() {
+    const decodedParams = req.decodedParams
+        , contractAddress = decodedParams.contract_address
+        , numberOfDecimals = await thirdPartyContractInteract.getNumberOfDecimals(contractAddress);
+
+    const apiResponseData = {
+      numberOfDecimals: numberOfDecimals
+    };
+
+    return responseHelper.successWithData(apiResponseData).renderResponse(res);
+  };
+
+  Promise.resolve(performer()).catch(function (err) {
+    console.error(err);
+    responseHelper.error('r_tpc_3', 'Something went wrong').renderResponse(res)
+  });
+
+});
 
 module.exports = router;
