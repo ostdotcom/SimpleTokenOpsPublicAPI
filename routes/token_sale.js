@@ -18,8 +18,9 @@ const express = require('express')
 router.get('/whitelist-status', function (req, res, next) {
   const performer = async function() {
     const decodedParams = req.decodedParams
+      , contractAddress = decodedParams.contract_address
       , ethereumAddress = decodedParams.ethereum_address
-      , whitelistPhase = await tokenSaleContractInteract.getWhitelistPhase(ethereumAddress);
+      , whitelistPhase = await tokenSaleContractInteract.getWhitelistPhase(contractAddress, ethereumAddress);
 
     const apiResponseData = {
       phase: whitelistPhase
