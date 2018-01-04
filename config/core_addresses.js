@@ -19,6 +19,10 @@ const allAddresses = {
       address: process.env.ST_TOKEN_SALE_CONTRACT_ADDR,
       abi: core_abis.tokenSale
     },
+    genericWhitelist: {
+      address: process.env.ST_GENERIC_TOKEN_SALE_CONTRACT_ADDRS,
+      abi: core_abis.genericWhitelist
+    },
     trustee: {
       address: process.env.ST_TRUSTEE_CONTRACT_ADDR,
       abi: core_abis.trustee

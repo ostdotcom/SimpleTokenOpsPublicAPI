@@ -7,17 +7,21 @@
  * * Reviewed by: Sunil
  */
 
-const web3WsProvider = require('../../lib/web3/ws_provider')
-  , coreAddresses = require('../../config/core_addresses')
-  , tokenSaleContractAbi = coreAddresses.getAbiForContract('tokenSale')
-  , tokenSaleContractAddress = coreAddresses.getAddressForContract('tokenSale')
-  , tokenSaleContract = new web3WsProvider.eth.Contract(tokenSaleContractAbi, tokenSaleContractAddress)
-  , stApi = require('../../lib/request/st_api');
+const rootPrefix = '../..'
+  , web3WsProvider = require(rootPrefix + '/lib/web3/ws_provider')
+  , coreAddresses = require(rootPrefix + '/config/core_addresses')
+  , stApi = require(rootPrefix + '/lib/request/st_api')
+  ;
 
-const eventCB = function(e, res){
-  console.log('WhitelistUpdated received.');
+const genericWhitelistContractAbi = coreAddresses.getAbiForContract('genericWhitelist')
+  , genericWhitelistContractAddresses = coreAddresses.getAddressesForContract('genericWhitelist')
+  ;
+
+const eventCB = function (e, res) {
+  console.log('WhitelistUpdated received for contract: ', res.address);
+
   if (e) {
-    console.error('### WhitelistUpdated error.');
+    console.error('### WhitelistUpdated error for contract: ', res.address);
     console.error(e);
     return;
   }
@@ -48,8 +52,11 @@ const eventCB = function(e, res){
     block_number: res.blockNumber,
     events_data: eventsData
   });
-
 };
 
-// Listen to WhitelistUpdated event
-tokenSaleContract.events.WhitelistUpdated({}, eventCB);
+for (var i = 0; i < genericWhitelistContractAddresses.length; i++) {
+  var genericWhitelistContract = new web3WsProvider.eth.Contract(genericWhitelistContractAbi, genericWhitelistContractAddresses[i]);
+
+  // Listen to WhitelistUpdated event
+  genericWhitelistContract.events.WhitelistUpdated({}, eventCB);
+}
