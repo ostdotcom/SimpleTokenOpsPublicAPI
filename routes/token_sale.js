@@ -10,7 +10,7 @@
 const express = require('express')
   , router = express.Router()
   , responseHelper = require('../lib/formatter/response')
-  , tokenSaleContractInteract = require('../lib/contract_interact/token_sale')
+  , genericWhitelistContractInteract = require('../lib/contract_interact/generic_whitelist')
   , simpleTokenContractInteract = require('../lib/contract_interact/simple_token')
   , coreAddresses = require('../config/core_addresses');
 
@@ -20,7 +20,7 @@ router.get('/whitelist-status', function (req, res, next) {
     const decodedParams = req.decodedParams
       , contractAddress = decodedParams.contract_address
       , ethereumAddress = decodedParams.ethereum_address
-      , whitelistPhase = await tokenSaleContractInteract.getWhitelistPhase(contractAddress, ethereumAddress);
+      , whitelistPhase = await genericWhitelistContractInteract.getWhitelistPhase(contractAddress, ethereumAddress);
 
     const apiResponseData = {
       phase: whitelistPhase
