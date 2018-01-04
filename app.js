@@ -21,6 +21,7 @@ const express = require('express')
   , transactionRoutes = require('./routes/transaction')
   , blockRoutes = require('./routes/block')
   , tokenSaleRoutes = require('./routes/token_sale')
+  , bonusesRoutes = require('./routes/bonuses')
   , thirdPartyContractRoutes = require('./routes/third_party_contract');
 
 // add event listeners
@@ -84,6 +85,7 @@ app.use('/block', decodeJwt, blockRoutes);
 app.use('/address', decodeJwt, addressRoutes);
 app.use('/token-sale', decodeJwt, tokenSaleRoutes);
 app.use('/third-party-contract', decodeJwt, thirdPartyContractRoutes);
+app.use('/bonuses', decodeJwt, bonusesRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

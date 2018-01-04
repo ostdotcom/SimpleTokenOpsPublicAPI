@@ -42,6 +42,10 @@ const allAddresses = {
     multiSigWallet: {
       address: JSON.parse(process.env.ST_MULTI_SIG_WALLET_ADDRS),
       abi: core_abis.multiSigWallet
+    },
+    bonuses: {
+      address: process.env.ST_BONUS_ALLOCATIONS_CONTRACT_ADDR,
+      abi: core_abis.bonuses
     }
   }
 };
