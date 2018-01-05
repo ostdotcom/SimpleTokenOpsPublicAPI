@@ -14,7 +14,7 @@ const express = require('express')
     , simpleTokenContractInteract = require('../lib/contract_interact/simple_token')
     , coreAddresses = require('../config/core_addresses');
 
-/* Get Start Index For Procssing Data in Bonuses */
+/* Get Addresses Size For Procssing Data in Bonuses */
 router.get('/addresses-size', function (req, res, next) {
 
   const performer = async function() {
@@ -23,6 +23,28 @@ router.get('/addresses-size', function (req, res, next) {
 
     const apiResponseData = {
       size: size
+    };
+
+    return responseHelper.successWithData(apiResponseData).renderResponse(res);
+
+  };
+
+  Promise.resolve(performer()).catch(function (err) {
+    console.error(err);
+    responseHelper.error('r_b_1', 'Something went wrong').renderResponse(res)
+  });
+
+});
+
+/* Get List of addresses For Procssing Data in Bonuses */
+router.get('/addresses', function (req, res, next) {
+
+  const performer = async function() {
+
+    const addresses = await bonusesContractInteract.getAddresses();
+
+    const apiResponseData = {
+      addresses: addresses
     };
 
     return responseHelper.successWithData(apiResponseData).renderResponse(res);
@@ -101,5 +123,30 @@ router.get('/get-contract-status', function (req, res, next) {
   });
 
 });
+
+/* Get Status of Processable Block of an address from Contract */
+router.get('/get-processable-status', function (req, res, next) {
+
+  const performer = async function() {
+
+    const decodedParams = req.decodedParams
+        , address = decodedParams.address
+        , processableStatus = await bonusesContractInteract.getProcessableStatus(address);
+
+    const apiResponseData = {
+      processableStatus: processableStatus
+    };
+
+    return responseHelper.successWithData(apiResponseData).renderResponse(res);
+
+  };
+
+  Promise.resolve(performer()).catch(function (err) {
+    console.error(err);
+    responseHelper.error('r_b_5', 'Something went wrong').renderResponse(res)
+  });
+
+});
+
 
 module.exports = router;
