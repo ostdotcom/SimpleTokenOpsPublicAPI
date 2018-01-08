@@ -20,7 +20,7 @@ const allAddresses = {
       abi: core_abis.tokenSale
     },
     genericWhitelist: {
-      address: process.env.ST_GENERIC_WHITELIST_CONTRACT_ADDRS,
+      address: JSON.parse(process.env.ST_GENERIC_WHITELIST_CONTRACT_ADDRS),
       abi: core_abis.genericWhitelist
     },
     trustee: {
@@ -88,7 +88,7 @@ const coreAddresses = {
   // This must return array of addresses.
   getAddressesForContract: function(contractName){
     var contractAddresses = allAddresses.contracts[contractName].address;
-    if(!contractAddresses || !Array.isArray(contractAddresses) || contractAddresses.length==0 ){
+    if(!contractAddresses || !Array.isArray(contractAddresses)){
       throw "Please pass valid contractName to get contract address"
     }
     return contractAddresses;
