@@ -1,18 +1,47 @@
 "use strict";
+/*
+ * Bonuses
+ *
+ * * Author: Puneet
+ * * Date: 11/11/2017
+ * * Reviewed by:
+ *
+ * node bonusesData.js 1
+ *
+ */
 
-const bonusesContractInteract = require('../../lib/contract_interact/bonuses');
+// STEPS
+//
+// READ Contract (using index. index starts from 1)
+
+const rootPrefix = '../..'
+    , bonusesContractInteractKlass = require(rootPrefix + '/lib/contract_interact/bonuses')
+    , coreAddresses = require(rootPrefix + '/config/core_addresses')
+    , contractName = 'bonuses'
+    , contractAddresses = coreAddresses.getAddressesForContract(contractName);
 
 const bonusAllocationsDataVerifier = {
 
   perform: async function() {
 
-    console.log('Starting verification for bonus allocations');
+    const contractIndex = parseInt(process.argv[2]);
 
-    const fileName = 'bonusesData.csv';
-    var csvLength = await bonusesContractInteract.writeBonusesDataToCsv();
+    console.log('contractIndex: ' + contractIndex);
+    if (contractIndex < 1 || contractIndex > contractAddresses.length) {
+      console.error('index should be >= 1 and less than contract length');
+      process.exit(1);
+    }
+
+    const contractAddress = contractAddresses[contractIndex-1]
+        , bonusesContractInteract = new bonusesContractInteractKlass(contractAddress);
+
+    console.log('Starting verification for bonus allocations from address: ' + contractAddress);
+
+    const fileName = 'bonuses_' + contractIndex + "_in_stwei.csv";
+    var csvLength = await bonusesContractInteract.writeBonusesDataToCsv(fileName);
     console.log('CSV Written to Disk @' + fileName);
 
-    const addressesSize = await bonusesContractInteract.getAddressesSize();
+    const addressesSize = await bonusesContractInteract.getProcessablesSize();
 
     if (addressesSize != csvLength) {
       console.error('mismatch in size');

@@ -35,36 +35,14 @@ const setBonusesContractInteract = function(req, res, next) {
 };
 
 /* Get Addresses Size For Procssing Data in Bonuses */
-router.get('/addresses-size', setBonusesContractInteract, function (req, res, next) {
+router.get('/processables-size', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
-    const size = await bonusesContractInteract.getAddressesSize();
+    const size = await bonusesContractInteract.getProcessablesSize();
 
     const apiResponseData = {
       size: size
-    };
-
-    return responseHelper.successWithData(apiResponseData).renderResponse(res);
-
-  };
-
-  Promise.resolve(performer()).catch(function (err) {
-    console.error(err);
-    responseHelper.error('r_b_1', 'Something went wrong').renderResponse(res)
-  });
-
-});
-
-/* Get List of addresses For Procssing Data in Bonuses */
-router.get('/addresses', setBonusesContractInteract, function (req, res, next) {
-
-  const performer = async function() {
-
-    const addresses = await bonusesContractInteract.getAddresses();
-
-    const apiResponseData = {
-      addresses: addresses
     };
 
     return responseHelper.successWithData(apiResponseData).renderResponse(res);
@@ -150,8 +128,8 @@ router.get('/get-processable-status', setBonusesContractInteract, function (req,
   const performer = async function() {
 
     const decodedParams = req.decodedParams
-        , address = decodedParams.address
-        , processableStatus = await bonusesContractInteract.getProcessableStatus(address);
+        , index = decodedParams.index
+        , processableStatus = await bonusesContractInteract.getProcessableStatus(index);
 
     const apiResponseData = {
       processableStatus: processableStatus
