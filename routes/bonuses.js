@@ -10,12 +10,32 @@
 const express = require('express')
     , router = express.Router()
     , responseHelper = require('../lib/formatter/response')
-    , bonusesContractInteract = require('../lib/contract_interact/bonuses')
+    , bonusesContractInteractKlass = require('../lib/contract_interact/bonuses')
     , simpleTokenContractInteract = require('../lib/contract_interact/simple_token')
     , coreAddresses = require('../config/core_addresses');
 
+var bonusesContractInteract = null;
+
+const setBonusesContractInteract = function(req, res, next) {
+
+  const decodedParams = req.decodedParams
+      , contractAddress = decodedParams.contractAddress;
+
+  if (!contractAddress) {
+    console.error(req.path,' is Not Allowed For blank address');
+    return renderResult(
+        responseHelper.error('r_wi_5', req.path + ' is Not Allowed For blank address'),
+        res
+    );
+  } else {
+    bonusesContractInteract = new bonusesContractInteractKlass(contractAddress);
+    next();
+  }
+
+};
+
 /* Get Addresses Size For Procssing Data in Bonuses */
-router.get('/addresses-size', function (req, res, next) {
+router.get('/addresses-size', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
@@ -37,7 +57,7 @@ router.get('/addresses-size', function (req, res, next) {
 });
 
 /* Get List of addresses For Procssing Data in Bonuses */
-router.get('/addresses', function (req, res, next) {
+router.get('/addresses', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
@@ -59,7 +79,7 @@ router.get('/addresses', function (req, res, next) {
 });
 
 /* Get Start Index For Procssing Data in Bonuses */
-router.get('/start-index-for-processing', function (req, res, next) {
+router.get('/start-index-for-processing', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
@@ -81,7 +101,7 @@ router.get('/start-index-for-processing', function (req, res, next) {
 });
 
 /* Get Remaining Bonuses (which are yet to be processed) */
-router.get('/remaining-total-bonuses', function (req, res, next) {
+router.get('/remaining-total-bonuses', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
@@ -103,7 +123,7 @@ router.get('/remaining-total-bonuses', function (req, res, next) {
 });
 
 /* Get Status of Bonuses Contract */
-router.get('/get-contract-status', function (req, res, next) {
+router.get('/get-contract-status', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
@@ -125,7 +145,7 @@ router.get('/get-contract-status', function (req, res, next) {
 });
 
 /* Get Status of Processable Block of an address from Contract */
-router.get('/get-processable-status', function (req, res, next) {
+router.get('/get-processable-status', setBonusesContractInteract, function (req, res, next) {
 
   const performer = async function() {
 
