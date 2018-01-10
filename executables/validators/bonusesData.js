@@ -37,7 +37,7 @@ const bonusAllocationsDataVerifier = {
 
     console.log('Starting verification for bonus allocations from address: ' + contractAddress);
 
-    const fileName = 'bonuses_' + contractIndex + "_in_stwei.csv";
+    const fileName = 'bonuses_' + contractIndex + "_in_stwei_results.csv";
     var csvLength = await bonusesContractInteract.writeBonusesDataToCsv(fileName);
     console.log('CSV Written to Disk @' + fileName);
 
