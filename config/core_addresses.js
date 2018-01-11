@@ -50,6 +50,10 @@ const allAddresses = {
     genericERC20Contract: {
       address: JSON.parse(process.env.ST_GENERIC_ERC20_CONTRACT_ADDRS),
       abi: core_abis.genericERC20Contract
+    },
+    bonuses: {
+      address: JSON.parse(process.env.ST_BONUS_ALLOCATIONS_CONTRACT_ADDRS),
+      abi: core_abis.bonuses
     }
   }
 };
@@ -80,7 +84,7 @@ const coreAddresses = {
   getAddressForContract: function(contractName){
     var contractAddress = allAddresses.contracts[contractName].address;
     if(!contractAddress || contractAddress=='' || Array.isArray(contractAddress)){
-      throw "Please pass valid contractName to get contract address"
+      throw contractName + " Please pass valid contractName to get contract address"
     }
     return contractAddress;
   },
