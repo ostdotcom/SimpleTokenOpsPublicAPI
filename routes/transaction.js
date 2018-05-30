@@ -14,7 +14,42 @@ router.get('/get-info', function (req, res, next) {
       return result.renderResponse(res);
     };
 
+    const processReceipt = function(txReceipt){
+      const loTxReceipt = txReceipt.data;
+      if (loTxReceipt.hasOwnProperty('status')){
+        const txStatus = loTxReceipt.status;
+        if (txStatus === true){
+          loTxReceipt.status = 'mined';
+        }else{
+          loTxReceipt.status = 'failed';
+        }
+        return Promise.resolve(txReceipt);
+      }else{
+        return web3Interact.getTransaction(transactionHash)
+          .then(function(tx){
+            console.log("3. then of getTransaction",tx);
+            if (tx){
+              const txBlockNumber = tx.blockNumber;
+
+              if (txBlockNumber){
+                loTxReceipt.status = 'mined';
+              }else{
+                loTxReceipt.status = 'pending';
+              }
+            }else{
+              loTxReceipt.status = 'invalid';
+            }
+
+            return Promise.resolve(responseHelper.successWithData(loTxReceipt));
+          })
+          .catch(function(){
+            return Promise.resolve(txReceipt);
+          })
+      }
+    };
+
     return web3Interact.getReceipt(transactionHash)
+      .then(processReceipt)
       .then(renderResult);
   };
 
