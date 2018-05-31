@@ -15,7 +15,10 @@ router.get('/get-info', function (req, res, next) {
     };
 
     const processReceipt = function(txReceipt){
+      //txReceipt is a responseHelper object and data can be {}
       const loTxReceipt = txReceipt.data;
+      loTxReceipt.status = 'pending';
+
       if (loTxReceipt.hasOwnProperty('status')){
         const txStatus = loTxReceipt.status;
         if (txStatus === true){
@@ -23,19 +26,13 @@ router.get('/get-info', function (req, res, next) {
         }else{
           loTxReceipt.status = 'failed';
         }
+        //txReceipt is a responseHelper object
         return Promise.resolve(txReceipt);
       }else{
         return web3Interact.getTransaction(transactionHash)
           .then(function(tx){
-            console.log("3. then of getTransaction",tx);
             if (tx){
-              const txBlockNumber = tx.blockNumber;
-
-              if (txBlockNumber){
-                loTxReceipt.status = 'mined';
-              }else{
-                loTxReceipt.status = 'pending';
-              }
+              loTxReceipt.status = 'pending';
             }else{
               loTxReceipt.status = 'invalid';
             }
@@ -43,7 +40,7 @@ router.get('/get-info', function (req, res, next) {
             return Promise.resolve(responseHelper.successWithData(loTxReceipt));
           })
           .catch(function(){
-            return Promise.resolve(txReceipt);
+            return Promise.resolve(responseHelper.successWithData(loTxReceipt));
           })
       }
     };
