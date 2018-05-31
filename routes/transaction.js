@@ -17,7 +17,6 @@ router.get('/get-info', function (req, res, next) {
     const processReceipt = function(txReceipt){
       //txReceipt is a responseHelper object and data can be {}
       const loTxReceipt = txReceipt.data;
-      loTxReceipt.status = 'pending';
 
       if (loTxReceipt.hasOwnProperty('status')){
         const txStatus = loTxReceipt.status;
@@ -40,6 +39,7 @@ router.get('/get-info', function (req, res, next) {
             return Promise.resolve(responseHelper.successWithData(loTxReceipt));
           })
           .catch(function(){
+            loTxReceipt.status = 'pending';
             return Promise.resolve(responseHelper.successWithData(loTxReceipt));
           })
       }
