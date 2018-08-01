@@ -7,7 +7,12 @@
  * * Reviewed by: Sunil
  */
 
-const core_abis = require('./core_abis');
+const rootPrefix = '..'
+  , core_abis = require(rootPrefix + '/config/core_abis')
+  , stApi = require(rootPrefix + '/lib/request/st_api')
+;
+
+let genericWhitelistContractAddresses = [];
 
 const allAddresses = {
   contracts: {
@@ -96,6 +101,16 @@ const coreAddresses = {
       throw "Please pass valid contractName to get contract address"
     }
     return contractAddresses;
+  },
+
+  getGenericWhitelistContractAddresses: async function(){
+    if (genericWhitelistContractAddresses.length > 0){
+      return Promise.resolve(genericWhitelistContractAddresses);
+    }
+
+    genericWhitelistContractAddresses = stApi.getWhitelistContractAddresses();
+    return Promise.resolve(genericWhitelistContractAddresses);
+
   },
 
   getContractNameFor: function(contractAddr) {

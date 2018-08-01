@@ -8,7 +8,10 @@
  */
 
 // subscribe to WhitelistUpdated Event
-require('./token_sale/whitelist_updated');
+const updateWhitelistKlass = require('./token_sale/whitelist_updated')
+  ;
+updateWhitelistKlass.updateWhitelist();
+
 require('./token_sale/all');
 
 require('./simple_token/all');
