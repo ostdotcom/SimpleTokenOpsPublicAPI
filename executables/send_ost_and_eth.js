@@ -12,15 +12,15 @@ const rootPrefix = '..'
   , simpleTokenAddress = coreAddresses.getAddressForContract(contractName)
   , simpleTokenContractInteract = require(rootPrefix + '/lib/contract_interact/simple_token')
   , senderAddr = ''
-  , senderPassphrase = 'testtest'
-  , csvFilePath = './executables/eth_card.csv'
+  , senderPassphrase = ''
+  , csvFilePath = './executables/ether_cards.csv'
   , csvStartIndex = 0
   , web3RpcProvider = new Web3(coreConstants.ST_GETH_RPC_PROVIDER)
   , simpleTokenContractObj = new web3RpcProvider.eth.Contract(coreAddresses.getAbiForContract('simpleToken'))
-  , gasPrice = '0x3B9ACA00' // oneGW
+  , gasPrice = '0x2540BE400' // tenGw
   , gasLimit = '0x15F90' // 90000
-  , ethTransferValueInWei = '1'
-  , ostTransferValuenWei = '1'
+  , ethTransferValueInWei = '600000000000000'
+  , ostTransferValuenWei = '100000000000000000000'
   , txHashes = []
 ;
 
