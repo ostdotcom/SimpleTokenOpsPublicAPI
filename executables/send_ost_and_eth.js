@@ -149,15 +149,6 @@ const SendOSTAndEth = {
     //
     // console.log("sending ETH to ", ethAddress);
 
-    // let ethSendRsp = await web3RpcProvider.eth.sendTransaction({
-    //   from: senderAddr,
-    //   to: ethAddress,
-    //   value: ethTransferValueInWei,
-    //   gasPrice: gasPrice
-    // });
-    //
-    // console.log(`receipt for Eth Transfer to ${ethAddress} --> ${JSON.stringify(ethSendRsp)}`);
-
     // let ethTransferTxHash = await new Promise(
     //
     //   function (onResolve, onReject) {
@@ -183,19 +174,6 @@ const SendOSTAndEth = {
     await web3RpcProvider.eth.personal.unlockAccount(senderAddr, senderPassphrase);
     console.log('funder unlocked!');
     console.log("sending OST to ", ethAddress);
-
-    // let encodedABI = simpleTokenContractObj.methods.transfer(ethAddress, ostTransferValuenWei).encodeABI();
-    //
-    // let ostTransferParams = {
-    //   from: senderAddr,
-    //   to: simpleTokenAddress,
-    //   data: encodedABI,
-    //   gasPrice: gasPrice
-    // };
-    //
-    // let ostSendRsp = await web3RpcProvider.eth.sendTransaction(ostTransferParams);
-    //
-    // console.log(`receipt for OST Transfer to ${ethAddress} --> ${JSON.stringify(ostSendRsp)}`);
 
     let ostTransferTxHash = await new Promise(
 
