@@ -19,7 +19,7 @@ const rootPrefix = '..'
   , simpleTokenContractObj = new web3RpcProvider.eth.Contract(coreAddresses.getAbiForContract('simpleToken'))
   , gasPrice = '0x2540BE400' // tenGw
   , gasLimit = '0x15F90' // 90000
-  , ethTransferValueInWei = '600000000000000'
+  // , ethTransferValueInWei = '600000000000000'
   , ostTransferValuenWei = '100000000000000000000'
   , txHashes = []
 ;
@@ -48,7 +48,7 @@ const SendOSTAndEth = {
         console.log('csvFilePath', csvFilePath);
         console.log('csvStartIndex', csvStartIndex);
         console.log('gasPrice', gasPrice);
-        console.log('ethTransferValueInWei', ethTransferValueInWei);
+        // console.log('ethTransferValueInWei', ethTransferValueInWei);
         console.log('ostTransferValuenWei', ostTransferValuenWei);
 
         prompts.question("Do you want to really want to transfer to above ? [Y/N]",
@@ -143,11 +143,11 @@ const SendOSTAndEth = {
 
     console.log("starting to fund ", ethAddress);
 
-    await web3RpcProvider.eth.personal.unlockAccount(senderAddr, senderPassphrase);
-
-    console.log('funder unlocked!');
-
-    console.log("sending ETH to ", ethAddress);
+    // await web3RpcProvider.eth.personal.unlockAccount(senderAddr, senderPassphrase);
+    //
+    // console.log('funder unlocked!');
+    //
+    // console.log("sending ETH to ", ethAddress);
 
     // let ethSendRsp = await web3RpcProvider.eth.sendTransaction({
     //   from: senderAddr,
@@ -158,27 +158,27 @@ const SendOSTAndEth = {
     //
     // console.log(`receipt for Eth Transfer to ${ethAddress} --> ${JSON.stringify(ethSendRsp)}`);
 
-    let ethTransferTxHash = await new Promise(
-
-      function (onResolve, onReject) {
-
-        let ethSendParams = {
-          from: senderAddr,
-          to: ethAddress,
-          value: ethTransferValueInWei,
-          gasPrice: gasPrice,
-          gas: gasLimit
-        };
-
-        web3RpcProvider.eth.sendTransaction(ethSendParams)
-          .on('transactionHash', function (transactionHash) {
-            console.log(`hash for Eth Transfer to ${ethAddress} --> ${transactionHash}`);
-            onResolve(transactionHash);
-          });
-
-      }
-
-    );
+    // let ethTransferTxHash = await new Promise(
+    //
+    //   function (onResolve, onReject) {
+    //
+    //     let ethSendParams = {
+    //       from: senderAddr,
+    //       to: ethAddress,
+    //       value: ethTransferValueInWei,
+    //       gasPrice: gasPrice,
+    //       gas: gasLimit
+    //     };
+    //
+    //     web3RpcProvider.eth.sendTransaction(ethSendParams)
+    //       .on('transactionHash', function (transactionHash) {
+    //         console.log(`hash for Eth Transfer to ${ethAddress} --> ${transactionHash}`);
+    //         onResolve(transactionHash);
+    //       });
+    //
+    //   }
+    //
+    // );
 
     await web3RpcProvider.eth.personal.unlockAccount(senderAddr, senderPassphrase);
     console.log('funder unlocked!');
@@ -223,7 +223,7 @@ const SendOSTAndEth = {
 
     txHashes.push({
       address: ethAddress,
-      ethTransferTxHash: ethTransferTxHash,
+      // ethTransferTxHash: ethTransferTxHash,
       ostTransferTxHash: ostTransferTxHash
     })
 
@@ -239,7 +239,7 @@ const SendOSTAndEth = {
 
       console.log('waiting for mining of txs to: ', data.address);
 
-      await oThis.fetchTxReceipt(data.ethTransferTxHash);
+      // await oThis.fetchTxReceipt(data.ethTransferTxHash);
 
       await oThis.fetchTxReceipt(data.ostTransferTxHash);
 
@@ -287,28 +287,27 @@ const SendOSTAndEth = {
 
   verifyBalances:  async function(ethAddresses) {
 
-    const requiredEthBalance = new Bignumber(ethTransferValueInWei)
-      , requiredOstBalance = new Bignumber(ostTransferValuenWei)
-    ;
+    // const requiredEthBalance = new Bignumber(ethTransferValueInWei);
+    const requiredOstBalance = new Bignumber(ostTransferValuenWei);
 
     for(let i=0; i<ethAddresses.length; i++) {
 
       let ethAddress = ethAddresses[i];
 
-      let ethBalance = await web3RpcProvider.eth.getBalance(ethAddress);
-      let ethBalanceBn = new Bignumber(ethBalance);
+      // let ethBalance = await web3RpcProvider.eth.getBalance(ethAddress);
+      // let ethBalanceBn = new Bignumber(ethBalance);
 
-      if (!ethBalanceBn.eq(requiredEthBalance)) {
-        console.error(`ETH balance mistach for ${ethAddress} found: ${ethBalance}`);
-      } else {
-        console.log('ETH balance match for ', ethAddress);
-      }
+      // if (!ethBalanceBn.eq(requiredEthBalance)) {
+      //   console.error(`ETH balance mismatch for ${ethAddress} found: ${ethBalance}`);
+      // } else {
+      //   console.log('ETH balance match for ', ethAddress);
+      // }
 
       let ostBalance = await simpleTokenContractInteract.getBalance(ethAddress);
       let ostBalanceBn = new Bignumber(ostBalance);
 
       if (!ostBalanceBn.eq(requiredOstBalance)) {
-        console.error(`OST balance mistach for ${ethAddress} found: ${ostBalance}`);
+        console.error(`OST balance mismatch for ${ethAddress} found: ${ostBalance}`);
       } else {
         console.log('OST balance match for ', ethAddress);
       }
