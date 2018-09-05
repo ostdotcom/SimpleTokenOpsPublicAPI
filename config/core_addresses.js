@@ -104,13 +104,11 @@ const coreAddresses = {
   },
 
   getGenericWhitelistContractAddresses: async function(){
-    if (genericWhitelistContractAddresses.length > 0){
-      return Promise.resolve(genericWhitelistContractAddresses);
+    let genericWhitelistContractAddressesResponse = await stApi.getWhitelistContractAddresses();
+    if(genericWhitelistContractAddressesResponse.success === true){
+     return genericWhitelistContractAddressesResponse.data['contract_addresses']
     }
-
-    genericWhitelistContractAddresses = stApi.getWhitelistContractAddresses();
-    return Promise.resolve(genericWhitelistContractAddresses);
-
+    return []
   },
 
   getContractNameFor: function(contractAddr) {

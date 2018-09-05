@@ -63,6 +63,7 @@ router.post('/send', function (req, res, next) {
       , signedTx = decodedParams.signed_tx;
 
     const renderResult = function(result) {
+      console.log("render result : ", result)
       return result.renderResponse(res);
     };
 

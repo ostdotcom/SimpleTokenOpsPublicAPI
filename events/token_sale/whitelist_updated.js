@@ -9,10 +9,14 @@
 
 const rootPrefix = '../..'
   , web3WsProvider = require(rootPrefix + '/lib/web3/ws_provider')
-  , coreAddresses = require('../../config/core_addresses')
+  , coreAddresses = require(rootPrefix + '/config/core_addresses')
   , stApi = require(rootPrefix + '/lib/request/st_api')
-  , genericWhitelist = 'genericWhitelist'
-  ;
+;
+
+const genericWhitelist = 'genericWhitelist'
+;
+
+let subscriptionObjs = {};
 
 const eventCB = function (e, res) {
   console.log('WhitelistUpdated received for contract: ', res.address);
@@ -53,28 +57,61 @@ const eventCB = function (e, res) {
 
 const whiteListFuncitons = {
 
-  getGenericWhitelistABI: function (){
+  getGenericWhitelistABI: function () {
     return coreAddresses.getAbiForContract(genericWhitelist)
   },
 
-  getGenericWhitelistContractAddresses : async function (){
-    const contractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
-    return Promise.resolve(contractAddresses);
+  getAddresses: function (superSet, set) {
+    if (superSet === undefined || set === undefined) {
+      return superSet
+    }
+
+    const newSet = [];
+    superSet.forEach(function (val, index) {
+      if (!set.includes(val)) {
+        newSet.push(val);
+      }
+    });
+
+    return newSet;
   },
 
-  updateWhitelist : async function () {
+  updateWhitelist: async function (whitelistContractAddresses) {
     let oThis = this;
-    const whitelistContractAddressesPromise = await oThis.getGenericWhitelistContractAddresses()
-      , whitelistContractAddresses = whitelistContractAddressesPromise.data['contract_addresses']
-    ;
-    const whitelistContractAbi = oThis.getGenericWhitelistABI();
 
-    for (let i = 0; i < whitelistContractAddresses.length; i++) {
-      let genericWhitelistContract = new web3WsProvider.eth.Contract(whitelistContractAbi, whitelistContractAddresses[i]);
-
-      // Listen to WhitelistUpdated event
-      genericWhitelistContract.events.WhitelistUpdated({}, eventCB);
+    if (whitelistContractAddresses === undefined) {
+      whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
     }
+
+    const removeListenerAddresses = oThis.getAddresses(Object.keys(subscriptionObjs), whitelistContractAddresses)
+      , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))
+    ;
+
+
+    if (removeListenerAddresses && removeListenerAddresses.length > 0) {
+      removeListenerAddresses.forEach(function (address, index) {
+        const subscriptionObj = subscriptionObjs[address];
+        subscriptionObj.unsubscribe(function (error, success) {
+          if (success) {
+            console.log('Successfully unsubscribed!');
+            delete subscriptionObjs[address]
+          }
+        });
+      });
+    }
+
+    if (addListenerAddresses && addListenerAddresses.length > 0) {
+      const whitelistContractAbi = oThis.getGenericWhitelistABI();
+
+      for (let i = 0; i < addListenerAddresses.length; i++) {
+        const whitelistContractAddress = addListenerAddresses[i];
+        let genericWhitelistContract = await new web3WsProvider.eth.Contract(whitelistContractAbi, whitelistContractAddress);
+        // Listen to WhitelistUpdated event
+        let val = genericWhitelistContract.events.WhitelistUpdated({}, eventCB);
+        subscriptionObjs[whitelistContractAddress] = val
+      }
+    }
+
   },
 };
 

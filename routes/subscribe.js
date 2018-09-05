@@ -17,11 +17,11 @@ const rootPrefix = '..'
   , updateWhitelistKlass = require(rootPrefix + '/events/token_sale/whitelist_updated')
 ;
 
-router.get('/updated', function (req, res, next) {
+router.post('/updated', function (req, res, next) {
   const performer = async function() {
     const decodedParams = req.decodedParams;
 
-    updateWhitelistKlass.updateWhitelist();
+    updateWhitelistKlass.updateWhitelist(decodedParams.contract_addresses);
 
     return responseHelper.successWithData({}).renderResponse(res);
   };

@@ -10,7 +10,12 @@
 // subscribe to WhitelistUpdated Event
 const updateWhitelistKlass = require('./token_sale/whitelist_updated')
   ;
-updateWhitelistKlass.updateWhitelist();
+
+function updateWhitelist(){
+  updateWhitelistKlass.updateWhitelist();
+  setTimeout(updateWhitelist,20000);
+}
+setTimeout(updateWhitelist,2000);
 
 require('./token_sale/all');
 
