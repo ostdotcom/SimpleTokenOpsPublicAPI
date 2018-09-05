@@ -108,7 +108,7 @@ const coreAddresses = {
     if(genericWhitelistContractAddressesResponse.success === true){
      return genericWhitelistContractAddressesResponse.data['contract_addresses']
     }
-    return []
+    return undefined;
   },
 
   getContractNameFor: function(contractAddr) {

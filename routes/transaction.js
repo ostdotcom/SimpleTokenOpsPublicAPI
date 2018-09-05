@@ -8,7 +8,9 @@ const express = require('express')
 router.get('/get-info', function (req, res, next) {
   const performer = function() {
     const decodedParams = req.decodedParams
-      , transactionHash = decodedParams.transaction_hash;
+      , transactionHash = decodedParams.transaction_hash
+      , contractName = decodedParams.contract_type
+    ;
 
     const renderResult = function(result) {
       return result.renderResponse(res);
@@ -45,7 +47,7 @@ router.get('/get-info', function (req, res, next) {
       }
     };
 
-    return web3Interact.getReceipt(transactionHash)
+    return web3Interact.getReceipt(transactionHash, contractName)
       .then(processReceipt)
       .then(renderResult);
   };

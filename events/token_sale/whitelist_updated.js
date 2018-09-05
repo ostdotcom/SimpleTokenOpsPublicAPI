@@ -79,14 +79,9 @@ const whiteListFuncitons = {
   updateWhitelist: async function (whitelistContractAddresses) {
     let oThis = this;
 
-    if (whitelistContractAddresses === undefined) {
-      whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
-    }
-
     const removeListenerAddresses = oThis.getAddresses(Object.keys(subscriptionObjs), whitelistContractAddresses)
       , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))
     ;
-
 
     if (removeListenerAddresses && removeListenerAddresses.length > 0) {
       removeListenerAddresses.forEach(function (address, index) {
