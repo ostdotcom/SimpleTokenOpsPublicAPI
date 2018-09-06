@@ -15,7 +15,7 @@ const rootPrefix = '..'
 
 async function updateWhitelist(){
 
-  let timeoutTime = 21600;
+  let timeoutTime = 21600000;
   const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
 
   if (whitelistContractAddresses === undefined){
