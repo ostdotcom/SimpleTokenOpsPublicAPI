@@ -21,7 +21,6 @@ async function updateWhitelist(){
   if (whitelistContractAddresses === undefined){
     timeoutTime = 3000;
   }else{
-    console.log("whitelistContractAddresses : ",whitelistContractAddresses);
     updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
   }
   setTimeout(updateWhitelist,timeoutTime);
