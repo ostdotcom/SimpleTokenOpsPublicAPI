@@ -101,10 +101,10 @@ const coreAddresses = {
     return contractAddresses;
   },
 
-    // in case of an error in api response undefined value is returned
+  // in case of an error in api response undefined value is returned
   getGenericWhitelistContractAddresses: async function(){
-    let genericWhitelistContractAddressesResponse = await stApi.getWhitelistContractAddresses();
-    if(genericWhitelistContractAddressesResponse.success === true){
+    const genericWhitelistContractAddressesResponse = await stApi.getWhitelistContractAddresses();
+    if(genericWhitelistContractAddressesResponse && genericWhitelistContractAddressesResponse.success === true){
      return genericWhitelistContractAddressesResponse.data['contract_addresses']
     }
     return undefined;

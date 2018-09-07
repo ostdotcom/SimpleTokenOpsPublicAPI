@@ -79,7 +79,11 @@ const whiteListFuncitons = {
   updateWhitelist: async function (whitelistContractAddresses) {
     let oThis = this;
 
-    // use checksum addresses always for whitelistContractAddresses
+    whitelistContractAddresses.forEach(function (val,index) {
+      let checkSumVal = web3WsProvider.utils.toChecksumAddress(val);
+      whitelistContractAddresses[index] = checkSumVal
+    });
+    
 
     const removeListenerAddresses = oThis.getAddresses(Object.keys(subscriptionObjs), whitelistContractAddresses)
       , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))

@@ -15,9 +15,7 @@ const rootPrefix = '..'
 
 let retryCount = 1;
 
-async
-
-function updateWhitelist() {
+async function updateWhitelist() {
 
     let timeoutTime = 21600000; // 6 hours
     const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();

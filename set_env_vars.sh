@@ -5,7 +5,7 @@ export OPS_API_HTTPS_CERT=''
 export ST_GETH_RPC_PROVIDER='http://127.0.0.1:8545'
 export ST_GETH_WS_PROVIDER='ws://127.0.0.1:18545'
 
-export ST_API_BASE_URL='http://127.0.0.1:4000/api'
+export ST_API_BASE_URL='http://kyc.developmentost.com:8080/api'
 
 export ST_OPS_PUBLIC_API_SECRET_KEY='2somethingsarebetterkeptinenvironemntvariables'
 
