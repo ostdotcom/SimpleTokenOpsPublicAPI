@@ -9,22 +9,33 @@
 
 // subscribe to WhitelistUpdated Event
 const rootPrefix = '..'
-  , coreAddresses = require(rootPrefix + '/config/core_addresses')
-  , updateWhitelistKlass = require(rootPrefix + '/events/token_sale/whitelist_updated')
-  ;
+    , coreAddresses = require(rootPrefix + '/config/core_addresses')
+    , updateWhitelistKlass = require(rootPrefix + '/events/token_sale/whitelist_updated')
+;
 
-async function updateWhitelist(){
+let retryCount = 1;
 
-  let timeoutTime = 21600000;
-  const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
+async
 
-  if (whitelistContractAddresses === undefined){
-    timeoutTime = 3000;
-  }else{
-    updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
-  }
-  setTimeout(updateWhitelist,timeoutTime);
+function updateWhitelist() {
+
+    let timeoutTime = 21600000; // 6 hours
+    const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
+
+    if (whitelistContractAddresses === undefined) {
+        if (retryCount < 10) {
+            timeoutTime = 10000 * retryCount; // 10 seconds
+            retryCount++;
+        }else{
+            retryCount = 1;
+        }
+    } else {
+        retryCount = 1;
+        updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
+    }
+    setTimeout(updateWhitelist, timeoutTime);
 }
+
 updateWhitelist();
 
 require('./token_sale/all');

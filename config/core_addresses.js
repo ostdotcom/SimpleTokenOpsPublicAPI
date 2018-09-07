@@ -12,8 +12,6 @@ const rootPrefix = '..'
   , stApi = require(rootPrefix + '/lib/request/st_api')
 ;
 
-let genericWhitelistContractAddresses = [];
-
 const allAddresses = {
   contracts: {
     simpleToken: {
@@ -103,6 +101,7 @@ const coreAddresses = {
     return contractAddresses;
   },
 
+    // in case of an error in api response undefined value is returned
   getGenericWhitelistContractAddresses: async function(){
     let genericWhitelistContractAddressesResponse = await stApi.getWhitelistContractAddresses();
     if(genericWhitelistContractAddressesResponse.success === true){

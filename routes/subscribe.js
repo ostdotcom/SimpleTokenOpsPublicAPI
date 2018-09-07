@@ -17,7 +17,7 @@ const rootPrefix = '..'
   , updateWhitelistKlass = require(rootPrefix + '/events/token_sale/whitelist_updated')
 ;
 
-router.post('/updated', function (req, res, next) {
+router.post('/whitelist-updated', function (req, res, next) {
   const performer = async function() {
     const decodedParams = req.decodedParams;
 

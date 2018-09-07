@@ -79,6 +79,8 @@ const whiteListFuncitons = {
   updateWhitelist: async function (whitelistContractAddresses) {
     let oThis = this;
 
+    // use checksum addresses always for whitelistContractAddresses
+
     const removeListenerAddresses = oThis.getAddresses(Object.keys(subscriptionObjs), whitelistContractAddresses)
       , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))
     ;
