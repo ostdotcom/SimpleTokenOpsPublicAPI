@@ -24,3 +24,5 @@ export ST_GENERIC_ERC20_CONTRACT_ADDRS='[""]'
 export ST_GENERIC_WHITELIST_CONTRACT_ADDRS='["0x29cdf5eda348195178a88c4ee30f7552f1bde079"]'
 
 export ST_DEPLOYER_ADDR_PASSPHRASE='testtest'
+export ST_MAILER_TRASNPORT_PATH='/usr/sbin/sendmail'
+export ST_FROM_EMAILER='kyc.notifier@ost.com'
