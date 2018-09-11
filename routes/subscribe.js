@@ -14,7 +14,7 @@ const express = require('express')
 
 const rootPrefix = '..'
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , updateWhitelistKlass = require(rootPrefix + '/events/token_sale/whitelist_updated')
+  , updateWhitelistKlass = require(rootPrefix + '/events/whitelisting/whitelist_updated')
 ;
 
 router.post('/whitelist-updated', function (req, res, next) {
