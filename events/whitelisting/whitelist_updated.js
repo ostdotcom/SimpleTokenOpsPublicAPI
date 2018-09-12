@@ -89,6 +89,11 @@ const whiteListFuncitons = {
       , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))
     ;
 
+    console.log("already subscribed contract addresses: ",Object.keys(subscriptionObjs),
+      "\nreceived whitelistContractAddresses :", whitelistContractAddresses,
+      "\nunsubscribe Addresses : ", removeListenerAddresses,
+      "\nsubscribe Addresses :",addListenerAddresses);
+
     if (removeListenerAddresses && removeListenerAddresses.length > 0) {
       removeListenerAddresses.forEach(function (address, index) {
         const subscriptionObj = subscriptionObjs[address];
