@@ -54,6 +54,7 @@ applicationMailerKlass.prototype = {
 
     var fromEmail = coreConstants.ST_FROM_EMAILER
       , toEmail = 'aniket@ost.com, aman@ost.com, pankaj@ost.com, tejas@ost.com'
+      , subjectPrefix = "STOPuA::" + environment + " ";
     ;
 
     if (environment != 'development') {
@@ -61,7 +62,7 @@ applicationMailerKlass.prototype = {
         {
           from: params.from || fromEmail,
           to: params.to || toEmail,
-          subject: params.subject,
+          subject: subjectPrefix + params.subject,
           text: params.body
         }, function (err, info) {
           console.log("envelope:", info.envelope, "messageId:", info.messageId, "Error:", JSON.stringify(err))

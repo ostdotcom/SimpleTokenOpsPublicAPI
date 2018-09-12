@@ -27,3 +27,4 @@ export ST_DEPLOYER_ADDR='0xe06fb00bcc338000ef3d04d870a8beb84a3d0fa9'
 
 export ST_MAILER_TRASNPORT_PATH='/usr/sbin/sendmail'
 export ST_FROM_EMAILER='kyc.notifier@ost.com'
+export NODE_ENV='development'
