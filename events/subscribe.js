@@ -7,8 +7,6 @@
  * * Reviewed by: Sunil
  */
 
-// subscribe to WhitelistUpdated Event
-require('./token_sale/whitelist_updated');
 require('./token_sale/all');
 
 require('./simple_token/all');
@@ -20,3 +18,5 @@ require('./presales/all');
 require('./future_token_sale_lock_box/all');
 
 require('./grantable_allocations/all');
+
+require('./whitelisting/all');

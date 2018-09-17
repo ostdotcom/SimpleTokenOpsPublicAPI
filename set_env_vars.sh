@@ -5,7 +5,7 @@ export OPS_API_HTTPS_CERT=''
 export ST_GETH_RPC_PROVIDER='http://127.0.0.1:8545'
 export ST_GETH_WS_PROVIDER='ws://127.0.0.1:18545'
 
-export ST_API_BASE_URL='http://127.0.0.1:4000/api'
+export ST_API_BASE_URL='http://kyc.developmentost.com:8080/api'
 
 export ST_OPS_PUBLIC_API_SECRET_KEY='2somethingsarebetterkeptinenvironemntvariables'
 
@@ -21,8 +21,10 @@ export ST_PROCESSABLE_ALLOCATIONS_CONTRACT_ADDRS='[]'
 export ST_MULTI_SIG_WALLET_ADDRS='[]'
 
 export ST_GENERIC_ERC20_CONTRACT_ADDRS='[]'
-export ST_GENERIC_WHITELIST_CONTRACT_ADDRS='["0xbE3396d87c4A28Ec0066E6e0B18403d0963FC53e", "0x17D40dc4b050cA4A7f0982FfcC6D76334C9dbB04"]'
 
 export ST_DEPLOYER_ADDR_PASSPHRASE='testtest'
 export ST_DEPLOYER_ADDR='0xe06fb00bcc338000ef3d04d870a8beb84a3d0fa9'
 
+export ST_MAILER_TRASNPORT_PATH='/usr/sbin/sendmail'
+export ST_FROM_EMAILER='kyc.notifier@ost.com'
+export NODE_ENV='development'

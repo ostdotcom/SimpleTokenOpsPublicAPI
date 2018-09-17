@@ -7,7 +7,10 @@
  * * Reviewed by: Sunil
  */
 
-const core_abis = require('./core_abis');
+const rootPrefix = '..'
+  , core_abis = require(rootPrefix + '/config/core_abis')
+  , stApi = require(rootPrefix + '/lib/request/st_api')
+;
 
 const allAddresses = {
   contracts: {
@@ -20,7 +23,7 @@ const allAddresses = {
       abi: core_abis.tokenSale
     },
     genericWhitelist: {
-      address: JSON.parse(process.env.ST_GENERIC_WHITELIST_CONTRACT_ADDRS),
+      address: [],
       abi: core_abis.genericWhitelist
     },
     trustee: {
@@ -96,6 +99,15 @@ const coreAddresses = {
       throw "Please pass valid contractName to get contract address"
     }
     return contractAddresses;
+  },
+
+  // in case of an error in api response undefined value is returned
+  getGenericWhitelistContractAddresses: async function(){
+    const genericWhitelistContractAddressesResponse = await stApi.getWhitelistContractAddresses();
+    if(genericWhitelistContractAddressesResponse && genericWhitelistContractAddressesResponse.success === true){
+     return genericWhitelistContractAddressesResponse.data['contract_addresses']
+    }
+    return undefined;
   },
 
   getContractNameFor: function(contractAddr) {
