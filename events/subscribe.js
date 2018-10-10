@@ -7,6 +7,15 @@
  * * Reviewed by: Sunil
  */
 
+const eventSubscription = {
+
+  reSubscribe: function(){
+    whitelistingEvents.updateWhitelist();
+  }
+};
+
+module.exports = eventSubscription;
+
 require('./token_sale/all');
 
 require('./simple_token/all');
@@ -19,4 +28,6 @@ require('./future_token_sale_lock_box/all');
 
 require('./grantable_allocations/all');
 
-require('./whitelisting/all');
+const whitelistingEvents = require('./whitelisting/all');
+
+whitelistingEvents.updateWhitelist();

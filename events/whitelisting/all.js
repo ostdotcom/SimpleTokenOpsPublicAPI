@@ -15,23 +15,22 @@ const rootPrefix = '../..'
 
 let retryCount = 1;
 
-async function updateWhitelist() {
-
-  let timeoutTime = 21600000; // 6 hours
+async function getWhitelistAddresses(){
   const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
+  let timeoutTime = 21600000; //6 hours
 
-  if (whitelistContractAddresses === undefined) {
+  if (whitelistContractAddresses === undefined){
     if (retryCount < 10) {
       timeoutTime = 10000 * retryCount; // 10 seconds
       retryCount++;
 
     } else {
       const bodyText = "Fetching generic whitelist contract address reached its maximum retry count(" + retryCount + "). It " +
-        "may occur due to unreachable SimpleTokenAPI or response from SimpleTokenAPI may not same as desired.";
+            "may occur due to unreachable SimpleTokenAPI or response from SimpleTokenAPI may not same as desired.";
       mailer.perform({
-        subject: 'getGenericWhitelistContractAddresses :: Max retry count reached',
-        body: bodyText
-      });
+            subject: 'getGenericWhitelistContractAddresses :: Max retry count reached',
+            body: bodyText
+        });
 
       retryCount = 1;
     }
@@ -39,7 +38,16 @@ async function updateWhitelist() {
     retryCount = 1;
     updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
   }
-  setTimeout(updateWhitelist, timeoutTime);
+  console.log("Try after : " + timeoutTime);
+  setTimeout(getWhitelistAddresses, timeoutTime);
 }
 
-updateWhitelist();
+const whitelistingEvents = {
+
+  updateWhitelist: async function(){
+    getWhitelistAddresses();
+  }
+};
+
+module.exports = whitelistingEvents;
+
