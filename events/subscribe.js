@@ -8,7 +8,6 @@
  */
 
 const rootPrefix = '..',
-    Web3 = require('web3'),
     Web3Provider = require(rootPrefix + '/lib/web3/ws_provider');
 
 // Events to subscribe now
