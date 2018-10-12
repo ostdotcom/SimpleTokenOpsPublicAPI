@@ -8,7 +8,6 @@
  */
 
 const rootPrefix = '../..'
-  , web3WsProvider = require(rootPrefix + '/lib/web3/ws_provider')
   , coreAddresses = require(rootPrefix + '/config/core_addresses')
   , stApi = require(rootPrefix + '/lib/request/st_api')
 ;
@@ -19,13 +18,14 @@ const genericWhitelist = 'genericWhitelist'
 let subscriptionObjs = {};
 
 const eventCB = function (e, res) {
-  console.log('WhitelistUpdated received for contract: ', res.address);
 
   if (e) {
-    console.error('### WhitelistUpdated error for contract: ', res.address);
+    console.error('### Whitelist Contract subscription error.');
     console.error(e);
     return;
   }
+
+  console.log('WhitelistUpdated received for contract: ', res.address);
   const eventArgs = res.returnValues;
 
   const eventsData = [
@@ -76,7 +76,7 @@ const whiteListFuncitons = {
     return newSet;
   },
 
-  updateWhitelist: async function (whitelistContractAddresses) {
+  updateWhitelist: async function (whitelistContractAddresses, web3WsProvider) {
     let oThis = this;
 
     whitelistContractAddresses.forEach(function (val,index) {
@@ -119,6 +119,10 @@ const whiteListFuncitons = {
     }
 
   },
+
+  clearSubscriptions: function(){
+    subscriptionObjs = {};
+  }
 };
 
 module.exports = whiteListFuncitons;

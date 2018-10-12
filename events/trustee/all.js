@@ -7,11 +7,9 @@
  * * Reviewed by: Sunil
  */
 
-const web3WsProvider = require('../../lib/web3/ws_provider')
-  , coreAddresses = require('../../config/core_addresses')
+const coreAddresses = require('../../config/core_addresses')
   , contractAbi = coreAddresses.getAbiForContract('trustee')
-  , contractAddress = coreAddresses.getAddressForContract('trustee')
-  , contract = new web3WsProvider.eth.Contract(contractAbi, contractAddress);
+  , contractAddress = coreAddresses.getAddressForContract('trustee');
 
 const eventCB = function(e, res){
   if(res){
@@ -29,4 +27,17 @@ const eventCB = function(e, res){
   }
 };
 
-contract.events.allEvents({}, eventCB);
+
+const trusteeEvents = {
+
+  subscribe: async function(web3WsProvider){
+    console.log(" Contract trustee address: " + contractAddress + " to Subscribe events");
+    let contract = await new web3WsProvider.eth.Contract(contractAbi, contractAddress);
+    contract.events.allEvents({}, eventCB);
+  },
+
+  onUnsubscribed: function(){}
+
+};
+
+module.exports = trusteeEvents;

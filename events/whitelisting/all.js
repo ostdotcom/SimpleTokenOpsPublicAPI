@@ -15,6 +15,8 @@ const rootPrefix = '../..'
 
 let retryCount = 1;
 
+let web3WsProvider = null;
+
 async function getWhitelistAddresses(){
   const whitelistContractAddresses = await coreAddresses.getGenericWhitelistContractAddresses();
   let timeoutTime = 21600000; //6 hours
@@ -36,17 +38,36 @@ async function getWhitelistAddresses(){
     }
   } else {
     retryCount = 1;
-    updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
+    if(web3WsProvider){
+      updateWhitelistKlass.updateWhitelist(whitelistContractAddresses, web3WsProvider);
+    } else {
+      console.log(" WS Provider is not set.");
+      const bodyText = "Web Socket connection was not provided, during subscription of whitelisting events.";
+      mailer.perform({
+          subject: 'getGenericWhitelistContractAddresses :: Web Socket connection issue',
+          body: bodyText
+      });
+    }
   }
   console.log("Try after : " + timeoutTime);
   setTimeout(getWhitelistAddresses, timeoutTime);
 }
 
+function setWsProvider(wsProvider){
+  web3WsProvider = wsProvider;
+}
+
 const whitelistingEvents = {
 
-  updateWhitelist: async function(){
+  subscribe: async function(web3WsProvider){
+    setWsProvider(web3WsProvider);
     getWhitelistAddresses();
+  },
+
+  onUnsubscribed: function(){
+    updateWhitelistKlass.clearSubscriptions();
   }
+
 };
 
 module.exports = whitelistingEvents;

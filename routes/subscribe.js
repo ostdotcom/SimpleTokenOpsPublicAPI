@@ -14,6 +14,7 @@ const express = require('express')
 
 const rootPrefix = '..'
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
+  , Web3Provider = require(rootPrefix + '/lib/web3/ws_provider')
   , updateWhitelistKlass = require(rootPrefix + '/events/whitelisting/whitelist_updated')
 ;
 
@@ -21,7 +22,7 @@ router.post('/whitelist-updated', function (req, res, next) {
   const performer = async function() {
     const decodedParams = req.decodedParams;
 
-    updateWhitelistKlass.updateWhitelist(decodedParams.contract_addresses);
+    updateWhitelistKlass.updateWhitelist(decodedParams.contract_addresses, Web3Provider.getSocketConnection());
 
     return responseHelper.successWithData({}).renderResponse(res);
   };
