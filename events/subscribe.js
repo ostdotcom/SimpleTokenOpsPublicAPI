@@ -13,13 +13,13 @@ const rootPrefix = '..',
 // Events to subscribe now
 // Add in below array to Subscribe events.
 const eventsToSubscribe = [
-    require('./token_sale/all')
-    ,require('./future_token_sale_lock_box/all')
-    ,require('./simple_token/all')
-    ,require('./trustee/all')
-    // ,require('./presales/all')
-    // ,require('./grantable_allocations/all')
-    ,require('./whitelisting/all')
+    require(rootPrefix + '/events/token_sale/all')
+    ,require(rootPrefix + '/events/future_token_sale_lock_box/all')
+    ,require(rootPrefix + '/events/simple_token/all')
+    ,require(rootPrefix + '/events/trustee/all')
+    // ,require(rootPrefix + '/events/presales/all')
+    // ,require(rootPrefix + '/events/grantable_allocations/all')
+    ,require(rootPrefix + '/events/whitelisting/all')
 ];
 
 const getWScallback = function(provider){
@@ -30,26 +30,26 @@ const getWScallback = function(provider){
     provider.on('end', e => {
         console.log("WS Disconnected");
         onUnsubscribed();
-        setTimeout(getWSProvider, 10000);
+        setTimeout(getWSProvider, 5000);
     });
 };
 
 function getWSProvider(){
   Web3Provider.getWsProvider(getWScallback);
-}
+};
 
-async function subscribeAllEvents(web3WsProvider){
+function subscribeAllEvents(web3WsProvider){
   for(let i = 0; i < eventsToSubscribe.length; i ++) {
     let eventKlass = eventsToSubscribe[i];
     eventKlass.subscribe(web3WsProvider);
   }
-}
+};
 
 function onUnsubscribed(){
   for(let i = 0; i < eventsToSubscribe.length; i ++) {
     let eventKlass = eventsToSubscribe[i];
     eventKlass.onUnsubscribed();
   }
-}
+};
 
 getWSProvider();
