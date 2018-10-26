@@ -10,6 +10,7 @@
 const rootPrefix = '..'
   , Web3Provider = require(rootPrefix + '/lib/web3/ws_provider')
   , mailer = require(rootPrefix + '/helpers/application_mailer')
+  , updateWhitelistKlass = require(rootPrefix + '/events/whitelisting/whitelist_updated')
 ;
 
 // Events to subscribe now
@@ -25,11 +26,10 @@ let retryCount = 0,
   eventsSubscribed = false
 ;
 
-function subscribeAllEvents(web3Obj) {
+function subscribeAllEvents() {
   for (let i = 0; i < eventsToSubscribe.length; i++) {
     let eventKlass = eventsToSubscribe[i];
-    console.log("WSProvider ->  Subscribing events for:", eventKlass);
-    eventKlass.subscribe(web3Obj);
+    eventKlass.subscribe();
   }
 }
 
@@ -42,6 +42,7 @@ function sendEmail() {
 
 process.on('wsProviderConnect', () => {
   console.log("WSProvider -> subscribe :: Event received: wsProviderConnect.");
+  retryCount = 0;
   subscriptionHelper.processSubscription();
 });
 
@@ -49,9 +50,9 @@ process.on('wsProviderEnd', () => {
   eventsSubscribed = false;
   console.log("WSProvider -> subscribe :: Event received: wsProviderEnd.");
 
+  updateWhitelistKlass.clearSubscriptions();
   if (retryCount == maxAllowedRetry) {
     console.log("WSProvider -> subscribe :: Max retry reached.");
-    retryCount = 0;
     sendEmail();
 
   } else {
@@ -65,6 +66,7 @@ process.on('wsProviderEnd', () => {
 
 const subscriptionHelper = {
   processSubscription: function () {
+    console.log("WSProvider -> subscribe::processSubscription")
     if (!eventsSubscribed ) {
       const web3Obj = Web3Provider.getWeb3();
 
@@ -72,7 +74,7 @@ const subscriptionHelper = {
         eventsSubscribed = true;
         console.log("WSProvider -> Provider connected. retry attempt:", retryCount);
         retryCount = 0;
-        subscribeAllEvents(web3Obj);
+        subscribeAllEvents();
       }
     }
   }

@@ -56,15 +56,15 @@ const eventCB = function (e, res) {
   });
 };
 
-process.on('wsProviderEnd', () => {
-  console.log("whitelist_updated :: Event received: wsProviderEnd.");
-  whiteListFunctions.clearSubscriptions();
-});
 
 const whiteListFunctions = {
 
   getGenericWhitelistABI: function () {
     return coreAddresses.getAbiForContract(genericWhitelist)
+  },
+
+  getWeb3Object: function () {
+    return wsProvider.getWeb3();
   },
 
   getAddresses: function (superSet, set) {
@@ -82,14 +82,19 @@ const whiteListFunctions = {
     return newSet;
   },
 
-  updateWhitelist: async function (whitelistContractAddresses, web3Obj) {
-    let oThis = this;
+  updateWhitelist: async function (whitelistContractAddresses) {
+    let oThis = this
+      , web3Obj = undefined
+    ;
 
-    whitelistContractAddresses.forEach(function (val, index) {
-      let checkSumVal = web3Obj.utils.toChecksumAddress(val);
-      whitelistContractAddresses[index] = checkSumVal
-    });
+    if (whitelistContractAddresses && whitelistContractAddresses.length > 0) {
+      web3Obj = oThis.getWeb3Object();
 
+      whitelistContractAddresses.forEach(function (val, index) {
+        let checkSumVal = web3Obj.utils.toChecksumAddress(val);
+        whitelistContractAddresses[index] = checkSumVal
+      });
+    }
 
     const removeListenerAddresses = oThis.getAddresses(Object.keys(subscriptionObjs), whitelistContractAddresses)
       , addListenerAddresses = oThis.getAddresses(whitelistContractAddresses, Object.keys(subscriptionObjs))
@@ -112,7 +117,7 @@ const whiteListFunctions = {
       });
     }
 
-    if (web3Obj && wsProvider.isConnected() && addListenerAddresses && addListenerAddresses.length > 0) {
+      if (web3Obj && wsProvider.isConnected() && addListenerAddresses && addListenerAddresses.length > 0) {
       const whitelistContractAbi = oThis.getGenericWhitelistABI();
 
       for (let i = 0; i < addListenerAddresses.length; i++) {
@@ -120,15 +125,18 @@ const whiteListFunctions = {
         let genericWhitelistContract = await new web3Obj.eth.Contract(whitelistContractAbi, whitelistContractAddress);
         // Listen to WhitelistUpdated event
         let val = genericWhitelistContract.events.WhitelistUpdated({}, eventCB);
+        console.log("WSProvider -> whitelistUpdated::subscribe_address::",whitelistContractAddress);
         subscriptionObjs[whitelistContractAddress] = val
       }
+    } else if (!wsProvider.isConnected()) {
+      console.log("WSProvider -> whitelistUpdated::Provider Not connected");
     }
   },
 
   clearSubscriptions: function () {
     let oThis = this;
 
-    oThis.updateWhitelist([],);
+    oThis.updateWhitelist([]);
     subscriptionObjs = {}
   }
 };
