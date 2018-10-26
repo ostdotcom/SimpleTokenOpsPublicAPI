@@ -7,49 +7,75 @@
  * * Reviewed by:
  */
 
-const rootPrefix = '..',
-    Web3Provider = require(rootPrefix + '/lib/web3/ws_provider');
+const rootPrefix = '..'
+  , Web3Provider = require(rootPrefix + '/lib/web3/ws_provider')
+  , mailer = require(rootPrefix + '/helpers/application_mailer')
+;
 
 // Events to subscribe now
 // Add in below array to Subscribe events.
-const eventsToSubscribe = [
-    require(rootPrefix + '/events/token_sale/all')
-    ,require(rootPrefix + '/events/future_token_sale_lock_box/all')
-    ,require(rootPrefix + '/events/simple_token/all')
-    ,require(rootPrefix + '/events/trustee/all')
-    // ,require(rootPrefix + '/events/presales/all')
-    // ,require(rootPrefix + '/events/grantable_allocations/all')
-    ,require(rootPrefix + '/events/whitelisting/all')
-];
+const retryTimeInterval = 3000
+  , maxAllowedRetry = 7
+  , eventsToSubscribe = [
+     require(rootPrefix + '/events/whitelisting/all')
+  ]
+;
 
-const getWScallback = function(provider){
-    provider.on('connect', () => {console.log('WS Connected');
-        console.log(" Go for Event subscription.");
-        subscribeAllEvents(Web3Provider.getSocketConnection());
-    });
-    provider.on('end', e => {
-        console.log("WS Disconnected");
-        onUnsubscribed();
-        setTimeout(getWSProvider, 5000);
-    });
-};
+let retryCount = 0,
+  eventsSubscribed = false
+;
 
-function getWSProvider(){
-  Web3Provider.getWsProvider(getWScallback);
-};
-
-function subscribeAllEvents(web3WsProvider){
-  for(let i = 0; i < eventsToSubscribe.length; i ++) {
+function subscribeAllEvents(web3Obj) {
+  for (let i = 0; i < eventsToSubscribe.length; i++) {
     let eventKlass = eventsToSubscribe[i];
-    eventKlass.subscribe(web3WsProvider);
+    console.log("WSProvider ->  Subscribing events for:", eventKlass);
+    eventKlass.subscribe(web3Obj);
+  }
+}
+
+function sendEmail() {
+  mailer.perform({
+    subject: 'IMPORTANT - Subscribe :: Max retry count reached',
+    body: "There issue in subscribe event."
+  });
+}
+
+process.on('wsProviderConnect', () => {
+  console.log("WSProvider -> subscribe :: Event received: wsProviderConnect.");
+  subscriptionHelper.processSubscription();
+});
+
+process.on('wsProviderEnd', () => {
+  eventsSubscribed = false;
+  console.log("WSProvider -> subscribe :: Event received: wsProviderEnd.");
+
+  if (retryCount == maxAllowedRetry) {
+    console.log("WSProvider -> subscribe :: Max retry reached.");
+    retryCount = 0;
+    sendEmail();
+
+  } else {
+    retryCount++;
+    let retryTimestamp = retryTimeInterval * retryCount;
+    console.log("WSProvider -> Provider is not connected. retryCount:", retryCount, ", retrying after: ", retryTimestamp, " seconds.");
+    setTimeout(subscriptionHelper.processSubscription, retryTimestamp);
+  }
+
+});
+
+const subscriptionHelper = {
+  processSubscription: function () {
+    if (!eventsSubscribed ) {
+      const web3Obj = Web3Provider.getWeb3();
+
+      if (Web3Provider.isConnected()) {
+        eventsSubscribed = true;
+        console.log("WSProvider -> Provider connected. retry attempt:", retryCount);
+        retryCount = 0;
+        subscribeAllEvents(web3Obj);
+      }
+    }
   }
 };
 
-function onUnsubscribed(){
-  for(let i = 0; i < eventsToSubscribe.length; i ++) {
-    let eventKlass = eventsToSubscribe[i];
-    eventKlass.onUnsubscribed();
-  }
-};
-
-getWSProvider();
+module.exports = subscriptionHelper;

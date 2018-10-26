@@ -24,10 +24,10 @@ const express = require('express')
   , thirdPartyContractRoutes = require('./routes/third_party_contract')
   , rootRoutes = require('./routes/root')
   , subscribeRoutes = require('./routes/subscribe')
+  , subscribeHelper = require('./events/subscribe')
 ;
 
-// add event listeners
-require('./events/subscribe');
+subscribeHelper.processSubscription();
 
 // uncomment after placing your favicon in /public
 app.use(logger('combined'));
