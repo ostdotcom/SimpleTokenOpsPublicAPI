@@ -133,7 +133,7 @@ const whiteListFunctions = {
           console.log("WSProvider -> whitelistUpdated::subscribe_address::", whitelistContractAddress);
           subscriptionObjs[whitelistContractAddress] = val
         }
-      } else if (!wsProvider.isConnected()) {
+      } else if (!wsProvider.isConnected(web3Obj)) {
         console.log("WSProvider -> whitelistUpdated::Provider Not connected");
       }
     }
