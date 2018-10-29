@@ -10,7 +10,7 @@
 const rootPrefix = '..'
   , Web3Provider = require(rootPrefix + '/lib/web3/ws_provider')
   , mailer = require(rootPrefix + '/helpers/application_mailer')
-  , updateWhitelistKlass = require(rootPrefix + '/events/whitelisting/all')
+  , updateWhitelistKlass = require(rootPrefix + '/events/whitelisting/whitelist_updated')
 ;
 
 // Events to subscribe now
