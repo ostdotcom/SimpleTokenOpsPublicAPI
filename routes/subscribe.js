@@ -22,7 +22,7 @@ router.post('/whitelist-updated', function (req, res, next) {
   const performer = async function() {
     const decodedParams = req.decodedParams;
 
-    updateWhitelistKlass.updateWhitelist(decodedParams.contract_addresses, Web3Provider.getWeb3());
+    updateWhitelistKlass.updateWhitelist(decodedParams.contract_addresses);
 
     return responseHelper.successWithData({}).renderResponse(res);
   };

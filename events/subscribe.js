@@ -66,11 +66,11 @@ process.on('wsProviderEnd', () => {
 
 const subscriptionHelper = {
   processSubscription: function () {
-    console.log("WSProvider -> subscribe::processSubscription")
+    console.log("WSProvider -> subscribe::processSubscription");
     if (!eventsSubscribed ) {
-      const web3Obj = Web3Provider.getWeb3();
+      const web3Obj = Web3Provider.getWeb3WithProvider();
 
-      if (Web3Provider.isConnected()) {
+      if (Web3Provider.isConnected(web3Obj)) {
         eventsSubscribed = true;
         console.log("WSProvider -> Provider connected. retry attempt:", retryCount);
         retryCount = 0;

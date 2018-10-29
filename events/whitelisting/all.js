@@ -47,7 +47,7 @@ async function getWhitelistAddresses() {
     updateWhitelistKlass.updateWhitelist(whitelistContractAddresses);
   }
   clearTimeoutObject();
-  console.log("Try after : " + timeoutTime);
+  console.log("Trying whitelist addresses fetch after : " + timeoutTime);
   timeoutObj = setTimeout(getWhitelistAddresses, timeoutTime);
 }
 
