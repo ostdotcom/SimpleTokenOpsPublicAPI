@@ -90,7 +90,7 @@ const SendOSTAndEth = {
 
     return new Promise(function (onResolve, onReject) {
 
-      const ethereum_dict = [];
+      const ethereum_addresses = [];
 
       let index = 0;
 
@@ -102,12 +102,18 @@ const SendOSTAndEth = {
             console.log('ignoring ', index, ethAddress);
           } else {
             console.log('accepting', index, ethAddress);
-            ethereum_dict.push(ethAddress)
+            ethereum_addresses.push(ethAddress)
           }
           index += 1
         })
         .on('end', function () {
-          onResolve(ethereum_dict);
+          const uSet = new Set(ethereum_addresses),
+            unique_ethereum_addresses = [...uSet];
+          if (unique_ethereum_addresses.length != ethereum_addresses.length) {
+            console.error(`duplicate entries in file, count: `, (ethereum_addresses.length - unique_ethereum_addresses.length));
+            process.exit(1);
+          }
+          onResolve(unique_ethereum_addresses);
         })
         .on('error', function (e) {
           console.error("Error: " + e + " in CSV parsing ");
