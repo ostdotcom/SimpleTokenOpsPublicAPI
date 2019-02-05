@@ -13,7 +13,7 @@ const preIngestionProcessableDataVerifier = {
 
   perform: async function() {
 
-    let filePath = rootPrefix + "/data/processable_allocations_in_st.csv";
+    let filePath = './data/processable_allocations_in_st.csv';
 
     console.log('reading from file: ' + filePath);
     
@@ -49,12 +49,6 @@ const preIngestionProcessableDataVerifier = {
       }
 
     });
-
-    if (problemFound) {
-      console.error('PROBLEMS FOUND IN SOME ADDRESSES ABOVE!!!!')
-    } else {
-      console.log('SUCCESS');
-    }
 
   }
 
