@@ -3,14 +3,18 @@
 // Script will validate data from CSV and check if the amounts in it are still available for allocation from Trustee contract
 
 const rootPrefix = '../..'
+  , fs = require('fs')
+  , parseCsv = require('csv-parse')
   , trusteeContractInteract = require(rootPrefix + '/lib/contract_interact/trustee')
   , BigNumber = require('bignumber.js')
 ;
 
 const preIngestionProcessableDataVerifier = {
 
-  perform: async function(filePath) {
-    
+  perform: async function() {
+
+    let filePath = rootPrefix + "/data/processable_allocations_in_st.csv";
+
     console.log('reading from file: ' + filePath);
     
     let csvData = await _private._readFromCsv(filePath);
@@ -31,16 +35,16 @@ const preIngestionProcessableDataVerifier = {
         allocationsData
       ;
 
-      console.log('checking for row: ', row.join(','));
+      // console.log('checking for row: ', row.join(','));
 
       allocationsData = await trusteeContractInteract.getAllocationsData(address);
-      console.log('address: ', address, allocationsData);
+      // console.log('address: ', address, allocationsData);
 
       amountEligibleToBeProcessedInWei = new BigNumber(allocationsData.amountGranted).minus(new BigNumber(allocationsData.amountTransferred));
-      console.log('address: ', address, amountEligibleToBeProcessedInWei, amountToProcessInWei);
+      // console.log('address: ', address, amountEligibleToBeProcessedInWei, amountToProcessInWei);
 
-      if (amountToProcessInWei.isGreaterThan(amountEligibleToBeProcessedInWei)) {
-        console.error('problem with address: ', address);
+      if (amountToProcessInWei.gt(amountEligibleToBeProcessedInWei)) {
+        console.error(`${address},${amountEligibleToBeProcessedInWei.toString(10)},${amountToProcessInWei.toString(10)},${amountToProcessInWei.minus(amountEligibleToBeProcessedInWei).toString(10)}`);
         problemFound = true;
       }
 
