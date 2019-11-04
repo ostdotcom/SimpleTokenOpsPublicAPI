@@ -31,20 +31,30 @@ const preIngestionProcessableDataVerifier = {
 
       let address = row[0],
         amountToProcessInWei = row[1],
+        oneSTWei = new BigNumber('1000000000000000000'),
         amountEligibleToBeProcessedInWei,
         allocationsData
       ;
 
-      // console.log('checking for row: ', row.join(','));
-
       allocationsData = await trusteeContractInteract.getAllocationsData(address);
-      // console.log('address: ', address, allocationsData);
 
       amountEligibleToBeProcessedInWei = new BigNumber(allocationsData.amountGranted).minus(new BigNumber(allocationsData.amountTransferred));
-      // console.log('address: ', address, amountEligibleToBeProcessedInWei, amountToProcessInWei);
 
       if (amountToProcessInWei.gt(amountEligibleToBeProcessedInWei)) {
-        console.error(`${address},${amountEligibleToBeProcessedInWei.toString(10)},${amountToProcessInWei.toString(10)},${amountToProcessInWei.minus(amountEligibleToBeProcessedInWei).toString(10)}`);
+        console.error(`------------------------------------`);
+        console.error(`Address: ${address}`);
+        console.error(`OST in CSV: ${amountToProcessInWei.div(oneSTWei).toString(10)}`);
+        console.error(`OST remaining contract: ${amountEligibleToBeProcessedInWei.div(oneSTWei).toString(10)}`);
+        console.error(`OST difference: ${amountToProcessInWei.minus(amountEligibleToBeProcessedInWei).div(oneSTWei).toString(10)}`);
+        console.error(`Change OST in CSV to: ${amountEligibleToBeProcessedInWei.div(oneSTWei).toString(10)}`);
+        problemFound = true;
+      } else if (amountEligibleToBeProcessedInWei.minus(amountToProcessInWei).lt(oneSTWei) && amountEligibleToBeProcessedInWei.minus(amountToProcessInWei).toString(10) != 0) {
+        console.error(`------------------------------------`);
+        console.error(`Address: ${address}`);
+        console.error(`OST in CSV: ${amountToProcessInWei.div(oneSTWei).toString(10)}`);
+        console.error(`OST remaining contract: ${amountEligibleToBeProcessedInWei.div(oneSTWei).toString(10)}`);
+        console.error(`OST difference: ${amountToProcessInWei.minus(amountEligibleToBeProcessedInWei).div(oneSTWei).toString(10)}`);
+        console.error(`Change OST in CSV to: ${amountEligibleToBeProcessedInWei.div(oneSTWei).toString(10)}`);
         problemFound = true;
       }
 
